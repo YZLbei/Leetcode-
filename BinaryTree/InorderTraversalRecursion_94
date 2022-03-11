@@ -1,0 +1,28 @@
+import java.util.LinkedList;
+import java.util.List;
+
+public class InorderTraversalRecursion_94 {
+    public class TreeNode{
+        int val;
+        TreeNode left;
+        TreeNode right;
+        TreeNode(){}
+        TreeNode(int x){this.val = x;}
+        TreeNode(int x,TreeNode left ,TreeNode right){
+            this.val =x;
+            this.left = left;
+            this.right = right;
+        }
+    }
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer>result = new LinkedList<>();
+        traversal(root,result);
+        return  result;
+    }
+    public void  traversal(TreeNode root,List<Integer> result){
+        if (root ==null) return;
+        traversal(root.left,result);
+        result.add(root.val);
+        traversal(root.right,result);
+    }
+}
