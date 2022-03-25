@@ -1,0 +1,78 @@
+package BST;
+
+import java.util.stream.Stream;
+
+public class IsValidBST_98 {
+    public class TreeNode{
+        int val;
+        TreeNode left;
+        TreeNode right;
+        TreeNode(){}
+        TreeNode(int x){this.val = x;}
+        TreeNode(int x, TreeNode left , TreeNode right){
+            this.val =x;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    /**
+     * 判断是不是二叉搜素树
+     * 二叉搜索树
+     * 节点的左子树只包含 小于 当前节点的数。
+     * 节点的右子树只包含 大于 当前节点的数。
+     * 所有左子树和右子树自身必须也是二叉搜索树。
+     *用递归实现
+     * 要注意的是左子树都比跟节点小
+     * 后序遍历
+     * 单层逻辑：找到左子树是否有比该节点大的值和右子树的否有比该节点小的值，与当前节点判断
+     * @param root
+     * @return
+     */
+    public boolean isValidBST(TreeNode root) {
+        if(root==null) return true;
+
+        if (!(getMax(root.left,root.val)&&getMin(root.right,root.val))) {
+            return false;
+        }
+        boolean left = isValidBST(root.left);
+        boolean right = isValidBST(root.right);
+
+        if(!(left && right)) return false;
+        else
+            return true;
+    }
+    //判断左子树是否有有比根节点大的值
+    public boolean getMax(TreeNode root,int val){
+        if(root==null)return true;
+
+        //求root，root.left，root.right三个中的最大值
+        if(root.val>=val)
+            return false;
+
+        boolean leftmax = getMax(root.left,val);
+        boolean rightmax = getMax(root.right,val);
+
+        //求
+        return leftmax&&rightmax;
+
+
+    }
+   //右子树的否有比该节点小的值
+    public boolean getMin(TreeNode root,int val){
+        if(root==null)return true;
+
+        if (root.val<=val)
+            return false;
+        boolean leftmax = getMin(root.left,val);
+        boolean rightmax = getMin(root.right,val);
+
+        //求
+        return leftmax&&rightmax;
+    }
+
+
+
+
+
+}
