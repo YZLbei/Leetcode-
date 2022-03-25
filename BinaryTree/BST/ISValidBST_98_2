@@ -1,0 +1,56 @@
+package BST;
+
+import java.util.ArrayList;
+
+public class ISValidBST_98_2 {
+    public class TreeNode{
+        int val;
+        TreeNode left;
+        TreeNode right;
+        TreeNode(){}
+        TreeNode(int x){this.val = x;}
+        TreeNode(int x,TreeNode left , TreeNode right){
+            this.val =x;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+
+    /**
+     * 验证是不是二叉搜索树可以转化为验证中序遍历是不是有序的
+     * 可以不用输出数组，在遍历的过程中判断即可
+     * 递归
+     * 中序遍历
+     */
+    public ArrayList<Integer> arrayList =new ArrayList<>();
+    public boolean isValidBST(TreeNode root) {
+        if(root==null) return true;
+        traversal(root);
+
+        //遍历arrayList，注意二叉搜索树不能有相同的值
+        for (int i = 0; i < arrayList.size()-1; i++) {
+            if(arrayList.get(i)>=arrayList.get(i+1))
+                return false;
+        }
+        return true;
+    }
+
+    /**
+     * 中序遍历
+     * @param root
+     */
+    public void traversal(TreeNode root){
+        if(root==null) return;
+        //中序遍历
+        traversal(root.left);
+        arrayList.add(root.val);
+        traversal(root.right);
+    }
+
+
+
+
+
+
+}
