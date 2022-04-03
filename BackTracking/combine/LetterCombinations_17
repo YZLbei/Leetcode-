@@ -1,0 +1,44 @@
+package com.combine;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+    public class LetterCombinations_17 {
+        public List<String> letterCombinations(String digits) {
+            if (digits.length()==0)
+                return result;
+            backtracking(digits,0);
+            return result;
+        }
+
+        public List<String>result = new LinkedList<>();
+        public StringBuilder path = new StringBuilder();//一条路径
+        public String []map ={"","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
+        //index是深度的表示，也就是表示数字的顺序
+        public void backtracking(String digits,int index){
+            //终止条件
+            System.out.println("index"+index);
+            System.out.println("dight"+digits.length());
+            if (index==digits.length()){
+                System.out.println("ddd");
+                String onepath =path.toString();
+                result.add(onepath);
+                return;
+            }
+
+            //先找到index对应的数字,可以不用转化出来
+            //直接用-‘0’获取当前的字符串
+            String str = map[digits.charAt(index)-'0'];
+            for (int i = 0; i < str.length(); i++) {
+                System.out.println(index+":"+str.charAt(i));
+                path.append(str.charAt(i));
+                backtracking(digits,index+1);
+                System.out.println(index+":"+path.charAt(path.length()-1));
+                path.deleteCharAt(path.length()-1);
+            }
+
+
+        }
+
+
+    }
