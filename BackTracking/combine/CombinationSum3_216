@@ -1,0 +1,50 @@
+package com.combine;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+public class CombinationSum3_216 {
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        backtracking(n,k,1);
+        return result;
+    }
+
+    public List<List<Integer>>result = new LinkedList<>();
+    public LinkedList<Integer>path = new LinkedList<>();
+    public int pathCount =0;//一条路径的值
+    public void backtracking(int n,int k,int startIndex){
+        //终止条件
+        //不带剪枝操作
+//        if (pathCount==n&&path.size()==k){
+//            result.add(new ArrayList<>(path));
+//            return;
+//        }
+
+        //带剪枝操作
+        if (pathCount>=n)
+            return;
+        if (path.size()==k-1){
+            System.out.println(pathCount);
+            int last = n-pathCount;//最后一个值
+            if (last>path.get(path.size()-1)&&last<=9) {
+                path.add(last);
+                result.add(new ArrayList<>(path));
+                path.removeLast();
+                return;
+            }
+            else
+            return;
+        }
+        //剪枝操作
+        //int max = Math.min(n - 3, 9);
+        for (int i=startIndex;i<=9-(k-path.size())+1;i++){
+            path.add(i);
+            pathCount +=i;
+            backtracking(n,k,i+1);
+            path.removeLast();
+            pathCount -=i;
+        }
+
+    }
+}
