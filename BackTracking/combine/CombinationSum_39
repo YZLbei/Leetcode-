@@ -1,0 +1,42 @@
+package com.combine;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * 自己的写法
+ * 正确的
+ */
+public class CombinationSum_39 {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        backtracking(candidates,target);
+        return result;
+    }
+
+    public List<List<Integer>> result = new LinkedList<>();
+    public LinkedList<Integer> path = new LinkedList<>();
+    public int pathSum;//路径目前的和
+    public void backtracking(int[] candidates, int target){
+        //终止条件为
+        //1.pathSum等于target
+        //2.pathSum大于target
+        if (pathSum>target)
+            return;
+        if (pathSum==target){
+            LinkedList<Integer> onepath = new LinkedList<>(path);
+            Collections.sort(onepath);
+            if (!result.contains(onepath))
+                result.add(new LinkedList<>(onepath));
+            return;
+        }
+        for (int i = 0; i < candidates.length; i++) {
+            path.add(candidates[i]);
+            pathSum+=candidates[i];
+            backtracking(candidates,target);
+            path.removeLast();
+            pathSum-=candidates[i];
+        }
+    }
+}
