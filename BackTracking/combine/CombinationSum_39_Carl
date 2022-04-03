@@ -1,0 +1,43 @@
+package com.combine;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+public class CombinationSum_39_Carl {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        backtracking(candidates,target,0);
+        return result;
+    }
+
+    public List<List<Integer>> result = new LinkedList<>();
+    public LinkedList<Integer> path = new LinkedList<>();
+    public int pathSum;//路径目前的和
+
+    /**
+     * 如果不用startindex，就需要在加入result时判断是否重复，时间复杂度太高
+     * 正确的做法是用startIndex，只是不+1，这样就可以避免在result中出现重复
+     * @param candidates
+     * @param target
+     */
+    public void backtracking(int[] candidates, int target,int startIndex){
+        //终止条件为
+        //1.pathSum等于target
+        //2.pathSum大于target
+        if (pathSum>target)
+            return;
+        if (pathSum==target){
+            result.add(new LinkedList<>(path));
+            return;
+        }
+        for (int i = startIndex; i < candidates.length&&pathSum+candidates[i]<=target; i++) {
+            path.add(candidates[i]);
+            pathSum+=candidates[i];
+            backtracking(candidates,target,i);
+            path.removeLast();
+            pathSum-=candidates[i];
+        }
+    }
+}
