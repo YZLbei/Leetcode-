@@ -1,0 +1,22 @@
+public int[][] reconstructQueue(int[][] people) {
+        //身高相同k小的站在前面
+        Arrays.sort(people,(a,b)->{
+           if (a[0]==b[0])return a[1]-b[1];
+           else return b[0]-a[0];
+        });
+        LinkedList<int[]>queue = new LinkedList<>();
+        for (int []p:people){
+            //插入操作
+            /**
+             * 在此列表中的指定位置插入指定元素。
+             * 将当前位于该位置的元素（如果有）和任何后续元素向右移动（将它们的索引加一）
+             *
+             * 根据p[1]插入p
+             */
+            queue.add(p[1],p);
+        }
+        //list转化为二维数组
+        return queue.toArray(new int[people.length][]);
+
+
+    }
