@@ -1,0 +1,54 @@
+public List<Integer> partitionLabels(String s) {
+        //存储字母的最远位置
+        int[] label = new int[26];
+        for (int i = 0; i < s.length(); i++) {
+            label[s.charAt(i)-'a'] = i;
+        }
+        List<Integer> result = new LinkedList<>();
+        int edge = 0;
+        int sum =0;//result中已经存储的长度
+        edge = label[s.charAt(0) - 'a'];
+        for (int i = 0; i < s.length(); i++) {
+            //当前字母的最远边界
+            int label_edge = label[s.charAt(i) - 'a'];
+            if (i==edge){
+                if (result.size()>=1){
+                    result.add(edge-sum);
+                    sum+=result.get(result.size()-1);
+                }
+                else {
+                    result.add(edge + 1);
+                    sum+=edge;
+                }
+                edge = 0;
+            }
+            else if (label_edge>edge){
+                edge =label_edge;
+                //只有一个字母的情况
+                if (i==edge){
+                    result.add(edge-sum);
+                    edge = 0;
+                }
+            }
+        }
+        return result;
+    }
+
+    public List<Integer> partitionLabels2(String s) {
+        int[] label = new int[26];
+        for (int i = 0; i < s.length(); i++) {
+            label[s.charAt(i)-'a'] = i;
+        }
+        List<Integer> result = new LinkedList<>();
+        int edge = 0;
+        int last =-1;
+        for (int i = 0; i < s.length(); i++) {
+            edge = Integer.max(edge,label[s.charAt(i)-'a']);
+            if (i==edge){
+                result.add(i-last);
+                last = i;
+            }
+        }
+        return result;
+
+    }
