@@ -1,0 +1,235 @@
+## 区间问题
+
+### 射气球问题(lc.452)
+
+[见合并区间问题](#更好的思路)
+
+
+
+
+
+### 无重叠区间(lc.435)
+
+> 先排序
+>
+> 1. 按end排序
+>
+> 从左到右遍历，取end最小的，这样留给下一个区间的空间就更大
+>
+> 2. 按start排序
+>
+> 从右到左遍历，取start越大的，越靠后，留给前面区间空间更大
+
+> 排序过后，有重叠的区间都会被找出
+
+```java
+public int eraseOverlapIntervals(int[][] intervals) {
+        Arrays.sort(intervals,(a,b)->{
+            if (a[1]==b[1])return a[0]-b[0];
+            else return a[1]-b[1];
+        });
+        int count= 1 ;
+        int edge = intervals[0][1];
+        for (int i = 1; i < intervals.length; i++) {
+            if (intervals[i][0]<edge)
+                count++;
+            else edge = intervals[i][1];
+        }
+        return count;
+    }
+```
+
+
+
+
+
+### 划分字母区间（lc.763）
+
+#### 思路
+
+> 与无重叠区间类似，需要保存边界
+>
+> 暴力思路：将每一个片段存下来
+>
+> 贪心：每次将边界设为当前字母最远位置
+>
+> 1. 字母问题可以用一个26大小的数组存
+> 2. 先遍历一遍，存一下每一个字母的最远位置
+> 3. 第二次遍历根据最远位置更新边界edge
+> 4. * 当遍历到edge时，说明找到一个边界，将edge加入result
+>    * 如果当前字母的最远边界大于edge则更新edge为最远边界
+> 5. 遇到的难点：
+>    - 加入result的处理：
+>    - * 要判断非空情况；
+>      * 要考虑第一个区间是从0开始，要加上1才能加入result
+>      * 要考虑一个字母的情况
+>    - 更好的result处理:
+>    - - edge
+>      - 用一个last存上一个edge，初始化为-1
+>      - 加入result，只需要加入i-last
+
+#### 总结
+
+1. 循环中获得一个值，并用这个值去判断，应该先获得值后判断；
+2. 字母问题可以用一个26大小的数组存。
+
+### 合并区间问题(lc.56)
+
+#### 最初的思路
+
+> 跟非重叠区间问题相同
+>
+> 不用edge，只需要判断和前一个是否有重叠
+>
+> 1. 按end排序
+> 2. 从左向右遍历，边界也是取end
+> 3. 遇到重叠就更新重叠区间
+>
+> * 无重叠，加入result
+>
+> * 有重叠
+>
+> * * 将当前赋值为cur
+>   * result中最后一个为last
+>   * 当cur[0]<=last[1]一直进行合并,需要while循环
+>
+>   
+>
+>   最初思路的问题：需要一个while循环来更新重叠区间，不好写
+>
+>   
+
+```java
+public int[][] merge(int[][] intervals) {
+        Arrays.sort(intervals,(a,b)->{
+            if (a[1]==b[1])return a[0]-b[0];
+            else return a[1]-b[1];
+        });
+        LinkedList<int[]>result = new LinkedList<>();
+        result.add(intervals[0]);
+        for (int i = 1; i < intervals.length; i++) {
+            //无重叠
+            if (intervals[i][0]>intervals[i-1][1]){
+                result.add(intervals[i]);
+            }
+            //更新区间
+            else {
+                int []cur = intervals[i];
+                int []last=result.get(result.size()-1);//last 为result中的最后一个
+                while (cur[0]<=last[1]&&result.size()>=1){
+                    //result.remove(result.size()-1);
+                    //last = result.get(result.size()-1);
+                    result.removeLast();
+                    last[0]=Integer.min(last[0],cur[0]);
+                    last[1]=cur[1];
+                    cur = last;
+                    if (result.size()>=1) last = result.getLast();
+                }
+                result.add(last);
+            }
+
+        }
+        return result.toArray(new int[result.size()][]);
+    }
+```
+
+
+
+#### 更好的思路
+
+> 不是与非重叠区间类似，实际上是与===用最少数量箭射气球相同 ===
+>
+> 1. 非重叠区间问题是让区间尽可能的不重叠，这样非重叠区间尽可能地小；
+> 2. 射气球问题则是让区间尽可能的重叠，这样用弓箭最少
+> 3. 该题实际上是让区间尽可能重叠
+
+> 射气球问题
+>
+> 两种排序：
+>
+> 1. 按start排序
+>    - 从左向右遍历，靠左尽可能让气球重复
+>    - 取重叠气球的最小右边界为edge
+>    - 当下一个气球start比edge大说明不重复，后面的气球也不会和这个边界重复
+> 2. 按end排序
+>    	从右到左遍历，靠右尽可能让气球重复
+
+> 合并区间问题
+>
+> 1. 按start排序
+>    - 从左向右遍历
+>    - 让重叠区间的右边界尽可能大，这样能覆盖更多的区间
+> 2. 按end排序
+>
+> 注意比较是和result中的已经存的区间比较来判断是否合并
+
+```java
+public int[][] merge_Carl_2(int[][] intervals) {
+        //按右边界排序
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[1]));
+        LinkedList<int[]>result = new LinkedList<>();
+        result.add(intervals[intervals.length-1]);
+        for (int i = intervals.length-2; i >=0; i--) {
+            //有重叠
+            if (intervals[i][1]>=result.getLast()[0]){
+                int start = Integer.min(intervals[i][0],result.getLast()[0]);
+                int end = result.getLast()[1];
+                result.removeLast();
+                result.add(new int[]{start,end});
+            }
+            else result.add(intervals[i]);
+        }
+        Collections.reverse(result);
+        return  result.toArray(new int[result.size()][]);
+    }
+```
+
+## 区间问题的总结
+
+### 1.跳跃游戏问题
+
+> 贪心思路：每次移动取最大距离，相当于取最大的覆盖范围，不断更新覆盖范围（cover），直到终点
+
+55.跳跃游戏
+
+45.跳跃游戏II
+
+### 	2.重叠区间问题
+
+#### 两种情况
+
+1. 让重叠区间尽可能的大
+
+   452.用最少数量的箭引爆气球
+   56.合并区间问题
+
+   736.划分字母区间
+
+   > 两种排序：
+   >
+   > 1. 按start排序
+   >    - 从左向右遍历，靠左尽可能让气球重复
+   >    - 取重叠气球的最小右边界为edge
+   >    - 当下一个气球start比edge大说明不重复，后面的气球也不会和这个边界重复
+   > 2. 按end排序
+   >    	从右到左遍历，靠右尽可能让气球重复
+
+2. 让重叠区间尽可能的小
+
+   435.无重叠区间
+
+   > 先排序
+   >
+   > 1. 按end排序
+   >
+   > 从左到右遍历，取end最小的，这样留给下一个区间的空间就更大
+   >
+   > 2. 按start排序
+   >
+   > 从右到左遍历，取start越大的，越靠后，留给前面区间空间更大
+
+   ===两种情况相反===
+
+   
+
+   
