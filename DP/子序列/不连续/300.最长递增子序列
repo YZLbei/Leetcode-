@@ -1,0 +1,87 @@
+### 300.最长递增子序列
+
+两种状态，要nums【i】或者不要nums【i】
+
+#### 思路
+
+##### 五部曲
+
+1. dp定义
+
+   dp[i] [0]表示要nums【i】的最长递增子序列的长度
+
+   dp[i] [1]表示不要nums【i】的最长递增子序列的长度
+
+   用last0和last1来存要和不要的子序列末尾元素
+
+2. 递推公式
+
+   dp[i] [0]的来源
+
+   - dp[i-1] [0]
+     - dp[i] [0]大于last0，dp[i] [0] = dp[i-1] [0]+1
+     - 不大于，dp[i] [0] = dp[i-1] [0]
+   - dp[i-1] [1]
+     - dp[i] [0]大于last1，dp[i] [0] = dp[i-1] [1]+1
+     - 不大于，dp[i] [0] = dp[i-1] [1]
+
+   3. 初始化
+
+      dp[0] [0] = nums[0]
+
+      last0 = nums[0]
+
+      其他值初始化为0
+
+   4. 遍历顺序
+
+      从左到右
+
+​	
+
+#### 更优的思路（Carl）
+
+##### 五部曲
+
+1. dp定义
+
+   **dp[i]表示i之前包括i的以nums[i]结尾最长上升子序列的长度**
+
+2. 递推公式（状态转移方程）
+
+   位置i的最长升序子序列等于j从0到i-1各个位置的最长升序子序列 + 1 的最大值。
+
+3. 初始化
+
+   每一个i，对应的dp[i]（即最长上升子序列）起始大小至少都是1.
+
+4. 遍历顺序
+
+   - dp[i] 是有0到i-1各个位置的最长升序子序列 推导而来，那么遍历i一定是从前向后遍历。
+
+   - j其实就是0到i-1，遍历i的循环在外层，遍历j则在内层
+
+
+
+因为最长上升子序列最后一个元素不一定是数组的末尾元素，需要一个result来记录dp的最大值
+
+```java
+public int lengthOfLIS(int[] nums) {
+    if(nums.length==1)
+        return 1;
+    int []dp = new int[nums.length];
+    for (int i = 0; i < nums.length; i++) {
+        dp[i] = 1;
+    }
+    int result = 0;
+    for (int i = 1; i < nums.length; i++) {
+        for (int j = 0; j < i; j++) {
+            if (nums[i]>nums[j]) dp[i] = Integer.max(dp[i],dp[j]+1);
+        }
+        if (dp[i]>result)
+            result =dp[i];
+    }
+    return result;
+}
+```
+
